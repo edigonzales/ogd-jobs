@@ -14,7 +14,7 @@ def bucket = "ch.so.data-dev"
 tasks.register('downloadCsv', Download) {
     description = "Download $csvFileName"
     src "https://s3.eu-central-1.amazonaws.com/ch.so.data.ingress-demo/ch.so.afu.abfallmengen_gemeinden/$csvFileName"
-    dest Paths.get(pathToTempFolder, csvFileName)
+    dest file(Paths.get(pathToTempFolder, csvFileName))
     overwrite true
 
     doLast {
