@@ -9,6 +9,7 @@ defaultTasks "runIntegrationJob"
 
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 def csvFileName = "ch.so.afu.abfallmengen_gemeinden.csv"
+def parquetFileName = "ch.so.afu.abfallmengen_gemeinden.parquet"
 def bucket = "ch.so.data-dev"
 
 tasks.register('downloadCsv', Download) {
@@ -41,7 +42,18 @@ tasks.register('uploadCsv', S3Upload) {
     acl = "public-read"
 }
 
+tasks.register('uploadParquet', S3Upload) {
+    dependsOn 'createParquet'
+    accessKey = awsAccessKeyAgi
+    secretKey = awsSecretAccessKeyAgi
+    sourceFile = file(parquetFileName)
+    endPoint = "https://s3.eu-central-1.amazonaws.com"
+    region = "eu-central-1"
+    bucketName = bucket
+    acl = "public-read"
+}
+
 tasks.register('runIntegrationJob') {
-    dependsOn 'uploadCsv'
+    dependsOn 'uploadCsv', 'uploadParquet'
 }
 
