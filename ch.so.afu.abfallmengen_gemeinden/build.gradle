@@ -24,7 +24,7 @@ tasks.register('downloadCsv', Download) {
 }
 
 tasks.register('createParquet') {    
-    description = "TODO: Implement github.com/edigonzale/csv2parquet as GRETL task."
+    description = "TODO: Implement github.com/edigonzales/csv2parquet as GRETL task."
     dependsOn 'downloadCsv'
     doLast {
         println "Creating parquet file..."
