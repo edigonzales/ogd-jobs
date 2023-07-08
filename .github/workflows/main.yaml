@@ -17,7 +17,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Build native image
+      - name: Run GRETL job
         id: buildNative
         run: |
           gradle -b ch.so.afu.abfallmengen_gemeinden/build.gradle tasks --all 
