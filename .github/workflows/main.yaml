@@ -1,4 +1,4 @@
-name: ogd-jobs
+name: ogd-job
 on:
   # push:
   #   paths-ignore:
@@ -21,53 +21,6 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Run GRETL job
-        #id: buildNative
+        #id: gretljob
         run: |
-          gradle -b ${{ github.event.inputs.version }}/build.gradle gretl
-  #     - name: 'Upload build artifact'
-  #       if: always() && (steps.buildNative.outcome == 'success')
-  #       uses: actions/upload-artifact@v2
-  #       with:
-  #         name: artifacts-native
-  #         path: |
-  #           build/distributions/*.zip
-
-  # release:
-  #   needs: [build]
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: 'Check out repository'
-  #       uses: actions/checkout@v2
-  #       with:
-  #         ref: ${{ steps.head.outputs.content }}
-  #         fetch-depth: 0
-
-  #     - name: 'Download all build artifacts'
-  #       uses: actions/download-artifact@v2
-
-  #     - name: 'List artifacts'
-  #       run: |
-  #         ls -la /home/runner/work/ilivalidator-native/ilivalidator-native/artifacts-native
-  #         ls -la /home/runner/work/ilivalidator-native/ilivalidator-native/
-
-  #     - name: Set up JDK 17
-  #       uses: actions/setup-java@v3
-  #       with:
-  #         distribution: 'liberica' 
-  #         java-version: '17'
-
-  #     - uses: actions/cache@v3
-  #       with:
-  #         path: |
-  #           ~/.gradle/caches
-  #           ~/.gradle/wrapper
-  #         key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-  #         restore-keys: |
-  #           ${{ runner.os }}-gradle-
-
-  #     - name: Release distributions
-  #       run: |
-  #         ./gradlew -i jreleaserRelease
-  #       env:
-  #         JRELEASER_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  #       if: ${{ success() && github.ref != 'refs/heads/main'}}
+          gradle -b ${{ github.event.inputs.version }}/build.gradle

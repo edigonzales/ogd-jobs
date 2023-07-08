@@ -1,19 +1,31 @@
-// import ch.so.agi.gretl.tasks.*
-// import java.nio.file.Files
-// import java.nio.file.Paths
+import ch.so.agi.gretl.tasks.*
+import java.nio.file.Files
+import java.nio.file.Paths
+import de.undercouch.gradle.tasks.download.Download
 
-// apply plugin: 'ch.so.agi.gretl'
+apply plugin: 'ch.so.agi.gretl'
 
-tasks.register('fubar') {
+defaultTasks "runIntegrationJob"
+
+def pathToTempFolder = System.getProperty("java.io.tmpdir")
+def csvFileName = "ch.so.afu.abfallmengen_gemeinden.csv"
+
+tasks.registers('downloadCsv', Download) {
+    description = "Download $csvFileName"
+    src "https://s3.eu-central-1.amazonaws.com/ch.so.data.ingress-demo/ch.so.afu.abfallmengen_gemeinden/$csvFileName"
+    dest Paths.get(pathToTempFolder, csvFileName)
+    overwrite true
+
+    doLast {
+        println "File downloaded to: " + pathToTempFolder
+    }
+}
+
+tasks.register('createParquet') {    
     description = "TODO: Implement github.com/edigonzale/csv2parquet as GRETL task."
+    dependsOn 'downloadCsv'
     doLast {
         println "Creating parquet file..."
     }
 }
 
-tasks.register('gretl') {
-    dependsOn 'fubar'
-    doLast {
-        println "Creating parquet file..."
-    }
-}
