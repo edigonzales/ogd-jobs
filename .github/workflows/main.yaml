@@ -14,11 +14,14 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    container:
+      image: sogis/gretl:2.2.379
+
     steps:
       - uses: actions/checkout@v3
 
       - name: Run GRETL job
-        id: buildNative
+        #id: buildNative
         run: |
           gradle -b ${{ github.event.inputs.version }}/build.gradle gretl
   #     - name: 'Upload build artifact'
