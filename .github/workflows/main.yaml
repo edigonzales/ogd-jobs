@@ -20,7 +20,7 @@ jobs:
       - name: Run GRETL job
         id: buildNative
         run: |
-          gradle -b ch.so.afu.abfallmengen_gemeinden/build.gradle gretl
+          gradle -b ${{ github.event.inputs.version }}/build.gradle gretl
   #     - name: 'Upload build artifact'
   #       if: always() && (steps.buildNative.outcome == 'success')
   #       uses: actions/upload-artifact@v2
