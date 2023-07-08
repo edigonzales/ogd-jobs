@@ -10,7 +10,7 @@ defaultTasks "runIntegrationJob"
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 def csvFileName = "ch.so.afu.abfallmengen_gemeinden.csv"
 
-tasks.registers('downloadCsv', Download) {
+tasks.register('downloadCsv', Download) {
     description = "Download $csvFileName"
     src "https://s3.eu-central-1.amazonaws.com/ch.so.data.ingress-demo/ch.so.afu.abfallmengen_gemeinden/$csvFileName"
     dest Paths.get(pathToTempFolder, csvFileName)
