@@ -1,9 +1,9 @@
 name: ilivalidator-native
 on:
-  push:
-    paths-ignore:
-      - '**.md'
-      - 'docs/**.md'
+  # push:
+  #   paths-ignore:
+  #     - '**.md'
+  #     - 'docs/**.md'
   workflow_dispatch:
     inputs:
       version:
@@ -20,8 +20,7 @@ jobs:
       - name: Build native image
         id: buildNative
         run: |
-          gradle -b tasks --all
-
+          gradle -b ch.so.afu.abfallmengen_gemeinden/build.gradle tasks --all 
   #     - name: 'Upload build artifact'
   #       if: always() && (steps.buildNative.outcome == 'success')
   #       uses: actions/upload-artifact@v2

@@ -1,3 +1,4 @@
+**/.gradle
 
 # exclude intellij *.iml files
 **/*.iml
