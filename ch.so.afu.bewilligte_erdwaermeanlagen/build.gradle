@@ -11,14 +11,14 @@ def pathToTempFolder = System.getProperty("java.io.tmpdir")
 def resultDir = file("./result")
 resultDir.mkdirs()
 
-def csvFileName = "ch.so.afu.abfallmengen_gemeinden.csv" // Ingress: Könnte anders heissen. Dann mit Copy-Task umbennen aber CSV in tmp-Directory herunterladen.
-def baseName = "ch.so.afu.abfallmengen_gemeinden"
+def csvFileName = "ch.so.afu.bewilligte_erdwaermeanlagen.csv" // Ingress: Könnte anders heissen. Dann mit Copy-Task umbennen aber CSV in tmp-Directory herunterladen.
+def baseName = "ch.so.afu.bewilligte_erdwaermeanlagen"
 def csvFileObj = file(Paths.get(resultDir.toString(), csvFileName))
 def parquetFileName = baseName + ".parquet"
 def excelFileName = baseName + ".xlsx"
 def tomlFileName = baseName + ".toml"
 def bucket = "ch.so.data-dev"
-def modelName = "SO_AFU_Abfallmengen_Gemeinden_20230629"
+def modelName = "SO_AFU_Bewilligte_Erdwaermeanlagen_20230616"
 def defaultModelDir = projectDir.toString()+";https://geo.so.ch/models"
 
 tasks.register('downloadCsv', Download) {

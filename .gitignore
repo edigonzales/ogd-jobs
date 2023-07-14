@@ -1,3 +1,5 @@
+**/result
+
 **/.gradle
 
 # exclude intellij *.iml files
