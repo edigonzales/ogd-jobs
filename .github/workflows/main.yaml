@@ -19,7 +19,8 @@ jobs:
     runs-on: ubuntu-latest
 
     container:
-      image: sogis/gretl:2.2.379
+      image: sogis/gretl:latest
+      #image: sogis/gretl:2.2.379
 
     steps:
       - uses: actions/checkout@v3

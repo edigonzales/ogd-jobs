@@ -8,14 +8,24 @@ apply plugin: 'ch.so.agi.gretl'
 defaultTasks "runIntegrationJob"
 
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
-def csvFileName = "ch.so.afu.abfallmengen_gemeinden.csv"
-def parquetFileName = "ch.so.afu.abfallmengen_gemeinden.parquet"
+def resultDir = file("./result")
+resultDir.mkdirs()
+
+def csvFileName = "ch.so.afu.abfallmengen_gemeinden.csv" // Ingress: Könnte anders heissen. Dann mit Copy-Task umbennen aber CSV in tmp-Directory herunterladen.
+def baseName = "ch.so.afu.abfallmengen_gemeinden"
+def csvFileObj = file(Paths.get(resultDir.toString(), csvFileName))
+def parquetFileName = baseName + ".parquet"
+def excelFileName = baseName + ".xlsx"
+def tomlFileName = baseName + ".toml"
+def metaFileName = "meta-" + baseName + ".xtf" 
 def bucket = "ch.so.data-dev"
+def modelName = "SO_AFU_Abfallmengen_Gemeinden_20230629"
+def defaultModelDir = projectDir.toString()+";https://geo.so.ch/models"
 
 tasks.register('downloadCsv', Download) {
     description = "Download $csvFileName"
     src "https://s3.eu-central-1.amazonaws.com/ch.so.data.ingress-demo/ch.so.afu.abfallmengen_gemeinden/$csvFileName"
-    dest file(Paths.get(pathToTempFolder, csvFileName))
+    dest csvFileObj 
     overwrite true
 
     doLast {
@@ -23,30 +33,49 @@ tasks.register('downloadCsv', Download) {
     }
 }
 
-tasks.register('createParquet') {    
-    description = "TODO: Implement github.com/edigonzales/csv2parquet as GRETL task."
+tasks.register('validateCsv', CsvValidator) {    
     dependsOn 'downloadCsv'
-    doLast {
-        println "Creating parquet file..."
-    }
+    dataFiles = [csvFileObj.toString()]
+    firstLineIsHeader = true
+    valueDelimiter = null
+    valueSeparator = ";"
+    models = modelName
+    modeldir = defaultModelDir
 }
 
-tasks.register('uploadCsv', S3Upload) {
-    dependsOn 'createParquet'
-    accessKey = awsAccessKeyAgi
-    secretKey = awsSecretAccessKeyAgi
-    sourceFile = file(Paths.get(pathToTempFolder, csvFileName))
-    endPoint = "https://s3.eu-central-1.amazonaws.com"
-    region = "eu-central-1"
-    bucketName = bucket
-    acl = "public-read"
+tasks.register('createParquet', Csv2Parquet) {    
+    dependsOn 'validateCsv'
+    csvFile = csvFileObj
+    firstLineIsHeader = true
+    valueDelimiter = null
+    valueSeparator = ";"
+    models = modelName
+    modeldir = defaultModelDir
+    outputDir = file(resultDir)
 }
 
-tasks.register('uploadParquet', S3Upload) {
+tasks.register('createExcel', Csv2Excel) {
     dependsOn 'createParquet'
+    csvFile = csvFileObj
+    firstLineIsHeader = true
+    valueDelimiter = null
+    valueSeparator = ";"
+    models = modelName
+    modeldir = defaultModelDir
+    outputDir = file(resultDir)
+}
+
+tasks.register('createMeta', OgdMetaPublisher) {
+    dependsOn 'createExcel'
+    configFile = file(tomlFileName)
+    outputDir = resultDir
+}
+
+tasks.register('uploadFiles', S3Upload) {
+    dependsOn 'createMeta'
     accessKey = awsAccessKeyAgi
     secretKey = awsSecretAccessKeyAgi
-    sourceFile = file(parquetFileName)
+    sourceFiles = fileTree(resultDir) { include "*.parquet" include "*.xlsx" include "*.csv" include "*.xtf" }
     endPoint = "https://s3.eu-central-1.amazonaws.com"
     region = "eu-central-1"
     bucketName = bucket
@@ -54,6 +83,6 @@ tasks.register('uploadParquet', S3Upload) {
 }
 
 tasks.register('runIntegrationJob') {
-    dependsOn 'uploadCsv', 'uploadParquet'
+    dependsOn 'uploadFiles'
 }
 
