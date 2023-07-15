@@ -3,7 +3,6 @@
 ```
 export ORG_GRADLE_PROJECT_awsAccessKeyAgi=xxxxxx
 export ORG_GRADLE_PROJECT_awsSecretAccessKeyAgi=yyyyyy
-
 ```
 
 ```
